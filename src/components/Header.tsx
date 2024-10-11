@@ -4,10 +4,20 @@ import { NeynarAuthButton } from "@neynar/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FC } from "react";
+import { useTheme } from "@/context/ThemeContext";
 
 export const Header: FC = () => {
   const [username, setUsername] = useState("");
   const router = useRouter();
+  const { theme, setTheme } = useTheme();
+
+  const themes = [
+    { name: "Default", value: "default" },
+    { name: "Nord", value: "nord" },
+    { name: "Solarized", value: "solarized" },
+    { name: "Dracula", value: "dracula" },
+    { name: "Monokai", value: "monokai" },
+  ];
 
   return (
     <header className="bg-primary shadow-md">
@@ -35,7 +45,20 @@ export const Header: FC = () => {
           </button>
         </div>
 
-        <NeynarAuthButton className="bg-secondary hover:bg-secondary/80 text-text font-bold py-2 px-4 rounded-full transition-all duration-300" />
+        <div className="flex items-center gap-4">
+          <select
+            value={theme}
+            onChange={(e) => setTheme(e.target.value)}
+            className="bg-secondary text-text rounded-md py-1 px-2 focus:outline-none focus:ring-2 focus:ring-accent"
+          >
+            {themes.map((t) => (
+              <option key={t.value} value={t.value}>
+                {t.name}
+              </option>
+            ))}
+          </select>
+          <NeynarAuthButton className="bg-secondary hover:bg-secondary/80 text-text font-bold py-2 px-4 rounded-full transition-all duration-300" />
+        </div>
       </div>
     </header>
   );

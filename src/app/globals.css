@@ -10,6 +10,38 @@
   --accent: #e94560;
 }
 
+[data-theme="nord"] {
+  --background: #2E3440;
+  --text: #D8DEE9;
+  --primary: #3B4252;
+  --secondary: #434C5E;
+  --accent: #88C0D0;
+}
+
+[data-theme="solarized"] {
+  --background: #002b36;
+  --text: #839496;
+  --primary: #073642;
+  --secondary: #586e75;
+  --accent: #b58900;
+}
+
+[data-theme="dracula"] {
+  --background: #282a36;
+  --text: #f8f8f2;
+  --primary: #44475a;
+  --secondary: #6272a4;
+  --accent: #ff79c6;
+}
+
+[data-theme="monokai"] {
+  --background: #272822;
+  --text: #f8f8f2;
+  --primary: #3e3d32;
+  --secondary: #75715e;
+  --accent: #f92672;
+}
+
 body {
   color: var(--text);
   background: var(--background);

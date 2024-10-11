@@ -5,6 +5,7 @@ import "@neynar/react/dist/style.css";
 import { Header } from "@/components/Header";
 import dynamic from 'next/dynamic';
 import { Theme } from '@neynar/react';
+import { ThemeProvider } from '@/context/ThemeContext';
 
 const NeynarContextProvider = dynamic(
   () => import('@neynar/react').then((mod) => mod.NeynarContextProvider),
@@ -29,8 +30,10 @@ export default function RootLayout({
             },
           }}
         >
-          <Header />
-          {children}
+          <ThemeProvider>
+            <Header />
+            {children}
+          </ThemeProvider>
         </NeynarContextProvider>
       </body>
     </html>
