@@ -6,17 +6,18 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { QRCodeSVG } from "qrcode.react";
+import { usePrivy } from "@privy-io/react-auth";
 
 interface FarcasterUser {
   signer_uuid: string;
   public_key: string;
   status: string;
   signer_approval_url?: string;
-  fid?: number;
 }
 
 export default function Home() {
   const { user } = useNeynarContext();
+  const { authenticated, user: privyUser } = usePrivy();
   const [channels, setChannels] = useState<{ channels: Channel[] } | null>(null);
   const [loading, setLoading] = useState(false);
   const [farcasterUser, setFarcasterUser] = useState<FarcasterUser | null>(null);
@@ -27,6 +28,7 @@ export default function Home() {
   const LOCAL_STORAGE_KEYS = {
     FARCASTER_USER: "farcasterUser",
   };
+
 
   const fetchChannels = async () => {
     if (!user) {
@@ -56,6 +58,7 @@ export default function Home() {
       setFarcasterUser(user);
     }
   }, []);
+
 
   useEffect(() => {
     if (farcasterUser && farcasterUser.status === "pending_approval") {
@@ -87,6 +90,7 @@ export default function Home() {
       const stopPolling = () => {
         clearInterval(intervalId);
       };
+
 
       const handleVisibilityChange = () => {
         if (document.hidden) {
@@ -162,49 +166,15 @@ export default function Home() {
     }
   };
 
+
   return (
     <main className="min-h-screen p-8 md:p-16 bg-gradient-to-br from-secondary to-background">
       <div className="max-w-4xl mx-auto">
         {/* Farcaster sign-in section */}
         <div className="mb-12 bg-primary rounded-lg p-8 shadow-lg">
-          {!farcasterUser?.status && (
-            <button
-              className="bg-accent hover:bg-accent/80 text-white font-bold py-3 px-6 rounded-full transition-all duration-300 shadow-md"
-              onClick={handleSignIn}
-              disabled={loading}
-            >
-              {loading ? (
-                <span className="flex items-center">
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Signing in...
-                </span>
-              ) : (
-                "Sign in with Farcaster"
-              )}
-            </button>
-          )}
-
-          {farcasterUser?.status === "pending_approval" && farcasterUser?.signer_approval_url && (
-            <div className="mt-6 text-center">
-              <QRCodeSVG value={farcasterUser.signer_approval_url} className="mx-auto" />
-              <div className="my-4 text-lg font-semibold">OR</div>
-              <a
-                href={farcasterUser.signer_approval_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-accent hover:text-accent/80 underline transition-colors duration-300"
-              >
-                Click here to view the signer URL (on mobile)
-              </a>
-            </div>
-          )}
-
-          {farcasterUser?.status === "approved" && (
+          {authenticated ? (
             <div className="mt-6">
-              <div className="text-2xl font-bold mb-6">Hello {farcasterUser.fid} 👋</div>
+              <div className="text-2xl font-bold mb-6">Hello {privyUser?.farcaster?.username} 👋</div>
               <div className="space-y-4">
                 <textarea
                   className="w-full p-4 rounded-lg bg-secondary text-text placeholder-text/50 focus:outline-none focus:ring-2 focus:ring-accent transition-all duration-300"
@@ -221,6 +191,10 @@ export default function Home() {
                   {isCasting ? "Casting..." : "Cast"}
                 </button>
               </div>
+            </div>
+          ) : (
+            <div className="text-center">
+              <p className="text-xl mb-4">Sign in with Farcaster to start casting</p>
             </div>
           )}
         </div>

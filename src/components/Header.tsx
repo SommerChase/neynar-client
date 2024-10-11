@@ -5,11 +5,13 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FC } from "react";
 import { useTheme } from "@/context/ThemeContext";
+import { usePrivy } from "@privy-io/react-auth";
 
 export const Header: FC = () => {
   const [username, setUsername] = useState("");
   const router = useRouter();
   const { theme, setTheme } = useTheme();
+  const { login, authenticated, user } = usePrivy();
 
   const themes = [
     { name: "Default", value: "default" },
@@ -48,7 +50,7 @@ export const Header: FC = () => {
         <div className="flex items-center gap-4">
           <select
             value={theme}
-            onChange={(e) => setTheme(e.target.value)}
+            onChange={(e) => setTheme(e.target.value as any)}
             className="bg-secondary text-text rounded-md py-1 px-2 focus:outline-none focus:ring-2 focus:ring-accent"
           >
             {themes.map((t) => (
@@ -57,6 +59,16 @@ export const Header: FC = () => {
               </option>
             ))}
           </select>
+          {authenticated ? (
+            <span className="text-text">Welcome, {user?.farcaster?.username}</span>
+          ) : (
+            <button
+              onClick={login}
+              className="bg-secondary hover:bg-secondary/80 text-text font-bold py-2 px-4 rounded-full transition-all duration-300"
+            >
+              Sign in with Farcaster
+            </button>
+          )}
           <NeynarAuthButton className="bg-secondary hover:bg-secondary/80 text-text font-bold py-2 px-4 rounded-full transition-all duration-300" />
         </div>
       </div>
