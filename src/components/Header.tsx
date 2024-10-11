@@ -11,7 +11,7 @@ export const Header: FC = () => {
   const [username, setUsername] = useState("");
   const router = useRouter();
   const { theme, setTheme } = useTheme();
-  const { login, authenticated, user } = usePrivy();
+  const { login, logout, authenticated, user } = usePrivy();
 
   const themes = [
     { name: "Default", value: "default" },
@@ -60,7 +60,15 @@ export const Header: FC = () => {
             ))}
           </select>
           {authenticated ? (
-            <span className="text-text">Welcome, {user?.farcaster?.username}</span>
+            <div className="flex items-center gap-4">
+              <span className="text-text">Welcome, {user?.farcaster?.username}</span>
+              <button
+                onClick={logout}
+                className="bg-secondary hover:bg-secondary/80 text-text font-bold py-2 px-4 rounded-full transition-all duration-300"
+              >
+                Log out
+              </button>
+            </div>
           ) : (
             <button
               onClick={login}
