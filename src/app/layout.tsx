@@ -1,9 +1,15 @@
-"use client";
+'use client';
 
 import "./globals.css";
-import { NeynarContextProvider, Theme } from "@neynar/react";
 import "@neynar/react/dist/style.css";
 import { Header } from "@/components/Header";
+import dynamic from 'next/dynamic';
+import { Theme } from '@neynar/react';
+
+const NeynarContextProvider = dynamic(
+  () => import('@neynar/react').then((mod) => mod.NeynarContextProvider),
+  { ssr: false }
+);
 
 export default function RootLayout({
   children,
@@ -12,21 +18,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <NeynarContextProvider
-        settings={{
-          clientId: process.env.NEXT_PUBLIC_NEYNAR_CLIENT_ID || "",
-          defaultTheme: Theme.Dark,
-          eventsCallbacks: {
-            onAuthSuccess: () => {},
-            onSignout() {},
-          },
-        }}
-      >
-        <body>
+      <body>
+        <NeynarContextProvider
+          settings={{
+            clientId: process.env.NEXT_PUBLIC_NEYNAR_CLIENT_ID || "",
+            defaultTheme: Theme.Dark,
+            eventsCallbacks: {
+              onAuthSuccess: () => {},
+              onSignout() {},
+            },
+          }}
+        >
           <Header />
           {children}
-        </body>
-      </NeynarContextProvider>
+        </NeynarContextProvider>
+      </body>
     </html>
   );
 }
