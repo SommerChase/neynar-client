@@ -6,15 +6,17 @@ export default async function Page({
   params: { channelId: string };
 }) {
   return (
-    <main className="mt-4 flex min-h-screen w-full flex-col items-center justify-between p-24">
-      <h1 className="text-3xl font-bold">{channelId}</h1>
-      <NeynarFeedList
-        feedType="filter"
-        channelId={channelId}
-        viewerFid={2}
-        limit={50}
-        filterType="channel_id"
-      />
+    <main className="min-h-screen p-8 md:p-16 bg-gradient-to-br from-secondary to-background">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-3xl font-bold mb-8 text-accent">{channelId}</h1>
+        <NeynarFeedList
+          feedType="filter"
+          channelId={channelId}
+          viewerFid={2}
+          limit={50}
+          filterType="channel_id"
+        />
+      </div>
     </main>
   );
 }

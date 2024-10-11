@@ -10,31 +10,33 @@ export const Header: FC = () => {
   const router = useRouter();
 
   return (
-    <div className="flex items-center justify-between px-16 pt-4 text-white">
-      <Link href="/" className="text-3xl font-bold">
-        NeynarClient
-      </Link>
+    <header className="bg-primary shadow-md">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+        <Link href="/" className="text-3xl font-bold text-accent">
+          NeynarClient
+        </Link>
 
-      <div className="flex items-center gap-4">
-        <input
-          type="text"
-          placeholder="Go to profile"
-          className="rounded-lg p-2 text-black"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        <button
-          onClick={() => {
-            console.log("searching for", username);
-            router.push(`/profile/${username}`);
-          }}
-          className="rounded-lg bg-blue-500 p-2"
-        >
-          Search
-        </button>
+        <div className="flex items-center gap-4">
+          <input
+            type="text"
+            placeholder="Go to profile"
+            className="rounded-full py-2 px-4 bg-secondary text-text placeholder-text/50 focus:outline-none focus:ring-2 focus:ring-accent transition-all duration-300"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <button
+            onClick={() => {
+              console.log("searching for", username);
+              router.push(`/profile/${username}`);
+            }}
+            className="bg-accent hover:bg-accent/80 text-white font-bold py-2 px-4 rounded-full transition-all duration-300"
+          >
+            Search
+          </button>
+        </div>
+
+        <NeynarAuthButton className="bg-secondary hover:bg-secondary/80 text-text font-bold py-2 px-4 rounded-full transition-all duration-300" />
       </div>
-
-      <NeynarAuthButton className="right-4 top-4" />
-    </div>
+    </header>
   );
 };

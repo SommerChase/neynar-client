@@ -163,79 +163,102 @@ export default function Home() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col p-16">
-      {/* Farcaster sign-in section */}
-      <div className="mb-8">
-        {!farcasterUser?.status && (
-          <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            onClick={handleSignIn}
-            disabled={loading}
-          >
-            {loading ? "Loading..." : "Sign in with Farcaster"}
-          </button>
-        )}
-
-        {farcasterUser?.status === "pending_approval" && farcasterUser?.signer_approval_url && (
-          <div className="mt-4">
-            <QRCodeSVG value={farcasterUser.signer_approval_url} />
-            <div className="my-2 text-center">OR</div>
-            <a
-              href={farcasterUser.signer_approval_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-500 hover:text-blue-700"
+    <main className="min-h-screen p-8 md:p-16 bg-gradient-to-br from-secondary to-background">
+      <div className="max-w-4xl mx-auto">
+        {/* Farcaster sign-in section */}
+        <div className="mb-12 bg-primary rounded-lg p-8 shadow-lg">
+          {!farcasterUser?.status && (
+            <button
+              className="bg-accent hover:bg-accent/80 text-white font-bold py-3 px-6 rounded-full transition-all duration-300 shadow-md"
+              onClick={handleSignIn}
+              disabled={loading}
             >
-              Click here to view the signer URL (on mobile)
-            </a>
-          </div>
-        )}
+              {loading ? (
+                <span className="flex items-center">
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Signing in...
+                </span>
+              ) : (
+                "Sign in with Farcaster"
+              )}
+            </button>
+          )}
 
-        {farcasterUser?.status === "approved" && (
-          <div className="mt-4">
-            <div className="text-xl font-bold mb-4">Hello {farcasterUser.fid} 👋</div>
-            <div className="flex flex-col gap-4">
-              <textarea
-                className="p-2 rounded-lg text-black"
-                placeholder="What's on your mind?"
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                rows={5}
-              />
-              <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                onClick={handleCast}
-                disabled={isCasting}
+          {farcasterUser?.status === "pending_approval" && farcasterUser?.signer_approval_url && (
+            <div className="mt-6 text-center">
+              <QRCodeSVG value={farcasterUser.signer_approval_url} className="mx-auto" />
+              <div className="my-4 text-lg font-semibold">OR</div>
+              <a
+                href={farcasterUser.signer_approval_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-accent hover:text-accent/80 underline transition-colors duration-300"
               >
-                {isCasting ? "Casting..." : "Cast"}
-              </button>
+                Click here to view the signer URL (on mobile)
+              </a>
             </div>
-          </div>
-        )}
-      </div>
+          )}
 
-      <div className="flex">
-        {user ? (
-          <div className="flex flex-col mr-8">
-            <h1 className="text-3xl font-bold mb-4">Channels</h1>
-            <div className="flex flex-col">
-              {channels && channels.channels && channels.channels.map((channel: Channel) => (
-                <div key={channel.url} className="rounded-lg p-2">
-                  <Link href={`/channel/${channel.id}`}>{channel.name}</Link>
-                </div>
-              ))}
+          {farcasterUser?.status === "approved" && (
+            <div className="mt-6">
+              <div className="text-2xl font-bold mb-6">Hello {farcasterUser.fid} 👋</div>
+              <div className="space-y-4">
+                <textarea
+                  className="w-full p-4 rounded-lg bg-secondary text-text placeholder-text/50 focus:outline-none focus:ring-2 focus:ring-accent transition-all duration-300"
+                  placeholder="What's on your mind?"
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  rows={5}
+                />
+                <button
+                  className="w-full bg-accent hover:bg-accent/80 text-white font-bold py-3 px-6 rounded-full transition-all duration-300 shadow-md"
+                  onClick={handleCast}
+                  disabled={isCasting}
+                >
+                  {isCasting ? "Casting..." : "Cast"}
+                </button>
+              </div>
             </div>
-          </div>
-        ) : (
-          <div>Loading user data...</div>
-        )}
+          )}
+        </div>
 
-        <div className="flex-grow">
-          <NeynarFeedList
-            feedType={user?.fid ? "following" : "filter"}
-            fid={user?.fid}
-            filterType="global_trending"
-          />
+        <div className="flex flex-col md:flex-row gap-8">
+          {user ? (
+            <div className="md:w-1/3">
+              <h1 className="text-3xl font-bold mb-6">Channels</h1>
+              <div className="space-y-2">
+                {channels && channels.channels && channels.channels.map((channel: Channel) => (
+                  <Link
+                    key={channel.url}
+                    href={`/channel/${channel.id}`}
+                    className="block bg-secondary hover:bg-secondary/80 rounded-lg p-4 transition-colors duration-300"
+                  >
+                    {channel.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="md:w-1/3 bg-secondary rounded-lg p-6 animate-pulse">
+              <div className="h-6 bg-primary rounded w-3/4 mb-4"></div>
+              <div className="space-y-2">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <div key={i} className="h-10 bg-primary rounded"></div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="md:w-2/3">
+            <NeynarFeedList
+              feedType="filter"
+              fid={user?.fid}
+              filterType="global_trending"
+            />
+          </div>
         </div>
       </div>
     </main>
