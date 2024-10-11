@@ -163,31 +163,9 @@ export default function Home() {
   };
 
   return (
-    <main className="flex min-h-screen p-16">
-      {user ? (
-        <div className="flex flex-col">
-          <h1 className="text-3xl font-bold">Channels</h1>
-          <div className="flex flex-col">
-            {channels && channels.channels && channels.channels.map((channel: Channel) => (
-              <div key={channel.url} className="rounded-lg p-4">
-                <Link href={`/channel/${channel.id}`}>{channel.name}</Link>
-              </div>
-            ))}
-          </div>
-        </div>
-      ) : (
-        <div>Loading user data...</div>
-      )}
-      <div className="ml-40 flex flex-col gap-6">
-        <NeynarFeedList
-          feedType={user?.fid ? "following" : "filter"}
-          fid={user?.fid}
-          filterType="global_trending"
-        />
-      </div>
-      
-      {/* New Farcaster sign-in section */}
-      <div className="mt-8">
+    <main className="flex min-h-screen flex-col p-16">
+      {/* Farcaster sign-in section */}
+      <div className="mb-8">
         {!farcasterUser?.status && (
           <button
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
@@ -212,28 +190,54 @@ export default function Home() {
             </a>
           </div>
         )}
-      </div>
-      {farcasterUser?.status === "approved" && (
-        <div className="mt-8">
-          <div className="text-xl font-bold mb-4">Hello {farcasterUser.fid} 👋</div>
-          <div className="flex flex-col gap-4">
-            <textarea
-              className="p-2 rounded-lg text-black"
-              placeholder="What's on your mind?"
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              rows={5}
-            />
-            <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-              onClick={handleCast}
-              disabled={isCasting}
-            >
-              {isCasting ? "Casting..." : "Cast"}
-            </button>
+
+        {farcasterUser?.status === "approved" && (
+          <div className="mt-4">
+            <div className="text-xl font-bold mb-4">Hello {farcasterUser.fid} 👋</div>
+            <div className="flex flex-col gap-4">
+              <textarea
+                className="p-2 rounded-lg text-black"
+                placeholder="What's on your mind?"
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                rows={5}
+              />
+              <button
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                onClick={handleCast}
+                disabled={isCasting}
+              >
+                {isCasting ? "Casting..." : "Cast"}
+              </button>
+            </div>
           </div>
+        )}
+      </div>
+
+      <div className="flex">
+        {user ? (
+          <div className="flex flex-col mr-8">
+            <h1 className="text-3xl font-bold mb-4">Channels</h1>
+            <div className="flex flex-col">
+              {channels && channels.channels && channels.channels.map((channel: Channel) => (
+                <div key={channel.url} className="rounded-lg p-2">
+                  <Link href={`/channel/${channel.id}`}>{channel.name}</Link>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div>Loading user data...</div>
+        )}
+
+        <div className="flex-grow">
+          <NeynarFeedList
+            feedType={user?.fid ? "following" : "filter"}
+            fid={user?.fid}
+            filterType="global_trending"
+          />
         </div>
-      )}
+      </div>
     </main>
   );
 }
